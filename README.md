@@ -39,12 +39,24 @@ cd RenW
 npm install
 ```
 
-3. Run the development server:
+3. Configure the Nano Banana AI (via Kie.ai):
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local` and add your Kie.ai API key:
+```
+NEXT_PUBLIC_KIE_AI_API_KEY=your_api_key_here
+```
+
+> **Note**: Get your API key from [kie.ai](https://kie.ai). The app will work with mock data if the API key is not configured.
+
+4. Run the development server:
 ```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ### Build for Production
 
@@ -75,10 +87,32 @@ RenW/
 │   └── globals.css          # Global styles
 ├── lib/                     # Utility libraries
 │   ├── types.ts            # TypeScript interfaces
-│   └── storage.ts          # Local storage utilities
+│   ├── storage.ts          # Local storage utilities
+│   └── kieai.ts            # Kie.ai API integration
 ├── components/             # Reusable React components
-└── public/                 # Static assets
+├── public/                 # Static assets
+└── .env.example            # Environment variables template
 ```
+
+## Nano Banana AI Integration
+
+The application integrates with **Nano Banana** AI through [Kie.ai](https://kie.ai) for intelligent content generation. 
+
+### Setup
+1. Sign up at [kie.ai](https://kie.ai) to get your API key
+2. Copy `.env.example` to `.env.local`
+3. Add your API key: `NEXT_PUBLIC_KIE_AI_API_KEY=your_key`
+
+### Features
+- **Smart Content Generation**: Generates engaging social media content tailored to your influencer's niche
+- **Context-Aware**: Uses influencer name, niche, and optional title for personalized content
+- **Graceful Fallback**: Automatically uses mock generation if API is unavailable
+
+### Usage
+In the workspace, click "✨ Generate with Nano Banana" to create AI-powered content. The system will:
+1. Send a request to Kie.ai with your influencer's context
+2. Generate creative, platform-appropriate content
+3. Fall back to sample content if the API is unavailable
 
 ## Features in Detail
 

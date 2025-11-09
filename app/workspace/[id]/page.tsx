@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { storage } from '@/lib/storage';
 import { AIInfluencer, Creative, Platform } from '@/lib/types';
+import { generateContentWithKieAI } from '@/lib/kieai';
 
 export default function WorkspacePage() {
   const router = useRouter();
@@ -40,20 +41,49 @@ export default function WorkspacePage() {
     loadData();
   }, [influencerId, router]);
 
-  const handleGenerateCreative = () => {
+  const handleGenerateCreative = async () => {
+    if (!influencer) return;
+    
     setIsGenerating(true);
-    // Simulate AI generation
-    setTimeout(() => {
+    
+    try {
+      const result = await generateContentWithKieAI({
+        prompt: 'Create engaging, creative social media content that will capture attention and drive engagement.',
+        influencerName: influencer.name,
+        niche: influencer.niche,
+        title: title || undefined,
+      });
+
+      if (result.error) {
+        // Fallback to mock generation if API fails
+        console.warn('API generation failed, using fallback:', result.error);
+        const suggestions = [
+          `Exciting news for ${influencer.niche} enthusiasts! 🎉`,
+          `Check out this amazing ${influencer.niche} content! 🚀`,
+          `New trends in ${influencer.niche} you don't want to miss! ✨`,
+          `Breaking: The future of ${influencer.niche} is here! 🌟`,
+        ];
+        const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+        setContent(randomSuggestion);
+        alert(`Note: ${result.error}\n\nUsing sample content instead.`);
+      } else {
+        setContent(result.content);
+      }
+    } catch (error) {
+      console.error('Error generating content:', error);
+      // Fallback to mock generation
       const suggestions = [
-        `Exciting news for ${influencer?.niche} enthusiasts! 🎉`,
-        `Check out this amazing ${influencer?.niche} content! 🚀`,
-        `New trends in ${influencer?.niche} you don't want to miss! ✨`,
-        `Breaking: The future of ${influencer?.niche} is here! 🌟`,
+        `Exciting news for ${influencer.niche} enthusiasts! 🎉`,
+        `Check out this amazing ${influencer.niche} content! 🚀`,
+        `New trends in ${influencer.niche} you don't want to miss! ✨`,
+        `Breaking: The future of ${influencer.niche} is here! 🌟`,
       ];
       const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
       setContent(randomSuggestion);
+      alert('Failed to connect to Nano Banana AI. Using sample content instead.');
+    } finally {
       setIsGenerating(false);
-    }, 1500);
+    }
   };
 
   const handleSaveCreative = () => {
