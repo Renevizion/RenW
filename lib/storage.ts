@@ -1,7 +1,8 @@
-import { AIInfluencer, Creative } from './types';
+import { AIInfluencer, Creative, Video } from './types';
 
 const INFLUENCERS_KEY = 'ai_influencers';
 const CREATIVES_KEY = 'ai_creatives';
+const VIDEOS_KEY = 'ai_videos';
 const ONBOARDING_KEY = 'onboarding_completed';
 
 export const storage = {
@@ -73,5 +74,34 @@ export const storage = {
   skipOnboarding: (): void => {
     if (typeof window === 'undefined') return;
     localStorage.setItem(ONBOARDING_KEY, 'true');
+  },
+
+  getVideos: (influencerId?: string): Video[] => {
+    if (typeof window === 'undefined') return [];
+    const data = localStorage.getItem(VIDEOS_KEY);
+    const videos = data ? JSON.parse(data) : [];
+    return influencerId 
+      ? videos.filter((v: Video) => v.influencerId === influencerId)
+      : videos;
+  },
+
+  saveVideo: (video: Video): void => {
+    if (typeof window === 'undefined') return;
+    const videos = storage.getVideos();
+    const existingIndex = videos.findIndex(v => v.id === video.id);
+    
+    if (existingIndex >= 0) {
+      videos[existingIndex] = video;
+    } else {
+      videos.push(video);
+    }
+    
+    localStorage.setItem(VIDEOS_KEY, JSON.stringify(videos));
+  },
+
+  deleteVideo: (id: string): void => {
+    if (typeof window === 'undefined') return;
+    const videos = storage.getVideos().filter(v => v.id !== id);
+    localStorage.setItem(VIDEOS_KEY, JSON.stringify(videos));
   }
 };
