@@ -23,8 +23,14 @@ A modern web application for managing AI influencers and creating content across
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 20.9.0 or higher
 - npm or yarn
+
+> **Node Version Management**: If you have an older Node version, we recommend using [nvm](https://github.com/nvm-sh/nvm) to install and manage Node.js versions. The repository includes a `.nvmrc` file for easy version switching:
+> ```bash
+> nvm install  # Installs the version specified in .nvmrc
+> nvm use      # Switches to the version specified in .nvmrc
+> ```
 
 ### Installation
 
